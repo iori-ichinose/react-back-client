@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
-import {Form, Input, Button, Checkbox, message} from 'antd';
+import {Form, Input, Button, message} from 'antd';
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 import './index.less';
-import logo from './images/logo.png';
+import logo from '../../assets/logo.png';
+import {sendLogin} from '../../api';
+import memoryUtils from '../../utils/memoryUtils';
+import {saveUser} from '../../utils/storageUtils';
+import {Redirect} from 'react-router-dom';
+
 
 class Login extends Component {
-  state = {
-    doRemember: false,
-    defaultUserName: '',
-    defaultPassword: ''
-  };
-
   layout = {
     labelCol: {span: 6},
     wrapperCol: {span: 16},
@@ -20,18 +19,19 @@ class Login extends Component {
     wrapperCol: {offset: 9, span: 12},
   };
 
-  onFinish = (values) => {
-    const {username, password, remember} = values;
-    this.setState(remember ? {
-      doRemember: true,
-      defaultUserName: username,
-      defaultPassword: password
-    } : {
-      doRemember: false,
-      defaultUsername: '',
-      defaultPassword: ''
-    });
-    console.log('Success:', username, password, remember);
+  onFinish = async (values) => {
+    const {username, password} = values;
+    const {history} = this.props;
+
+    const res = await sendLogin(username, password);
+    if (res.status === 0) {
+      message.success('登陆成功！');
+      memoryUtils.user = res.data;
+      saveUser(res.data);
+      history.replace('/');
+    } else {
+      message.error(res.msg);
+    }
   };
 
   onFinishFailed = (errorInfo) => {
@@ -41,6 +41,10 @@ class Login extends Component {
   };
 
   render() {
+    const user = memoryUtils.user;
+    if (user && user._id) {
+      return <Redirect to={'/'}/>;
+    }
     return (
       <div className={'login'}>
         <header className={'login-header'}>
@@ -52,14 +56,12 @@ class Login extends Component {
           <Form
             {...this.layout}
             name="basic"
-            initialValues={{remember: true}}
             onFinish={this.onFinish}
             onFinishFailed={this.onFinishFailed}
           >
             <Form.Item
               label="用户名："
               name="username"
-              initialValue={this.state.defaultUserName}
               rules={[
                 {required: true, message: 'Please input your username!'},
                 {max: 12, message: 'Username shouldn\'t be more than 12 characters'},
@@ -73,14 +75,9 @@ class Login extends Component {
             <Form.Item
               label="密码："
               name="password"
-              initialValue={this.state.defaultPassword}
               rules={[{required: true, message: 'Please input your password!'}]}
             >
               <Input.Password prefix={<LockOutlined/>}/>
-            </Form.Item>
-
-            <Form.Item {...(this.tailLayout)} name="remember" valuePropName="checked">
-              <Checkbox>记住密码</Checkbox>
             </Form.Item>
 
             <Form.Item {...(this.tailLayout)}>
