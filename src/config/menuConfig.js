@@ -9,24 +9,24 @@ import {
 
 const menuList = [
   {
-    title: "首页",
+    title: '首页',
     key: 'item-home',
     icon: HomeOutlined,
     link: '/home'
   },
   {
-    title: "商品",
+    title: '商品',
     key: 'item-product',
     icon: AppstoreOutlined,
     children: [
       {
-        title: "品类管理",
+        title: '品类管理',
         key: 'man-category',
         icon: UnorderedListOutlined,
         link: '/category'
       },
       {
-        title: "商品管理",
+        title: '商品管理',
         key: 'man-product',
         icon: ToolOutlined,
         link: '/product',
@@ -71,33 +71,18 @@ const menuList = [
     ]
   }
 ];
-/*
-<Menu.Item key={'item-home'} icon={<HomeOutlined/>}>
-  <Link to={'/home'}>
-    首页
-  </Link>
-</Menu.Item>
-<SubMenu key={'sub-product'} icon={<AppstoreOutlined/>} title="商品">
-  <Menu.Item key={'man-group'} icon={<OrderedListOutlined/>}>
-    <Link to={'/category'}>
-      品类管理
-    </Link>
-  </Menu.Item>
-  <Menu.Item key={'man-product'} icon={<ToolOutlined/>}>
-    <Link to={'/product'}>
-      品类管理
-    </Link>
-  </Menu.Item>
-</SubMenu>
-<Menu.Item key="sub-user" icon={<UserOutlined/>}>
-  <Link to={'/user'}>
-    用户管理
-  </Link>
-</Menu.Item>
-<Menu.Item key="sub-role" icon={<NotificationOutlined/>}>
-  <Link to={'/role'}>
-    角色管理
-  </Link>
-</Menu.Item>
- */
+
+export const mapping = new Map();
+const getItems = (menu) => {
+  for (const node of menu) {
+    if (!node.children) {
+      mapping.set(node.link, node.key);
+    } else {
+      getItems(node.children);
+    }
+  }
+};
+
+getItems(menuList);
+
 export default menuList;

@@ -1,12 +1,18 @@
 import React, {Component} from 'react';
 import {Menu} from 'antd';
-import {Link} from 'react-router-dom';
-import menuList from '../../config/menuConfig';
+import {Link, withRouter} from 'react-router-dom';
+import menuList, {mapping} from '../../config/menuConfig';
 
 const {SubMenu} = Menu;
 
 class LeftNav extends Component {
+  constructor(props) {
+    super(props);
+    this.nodes = this.getMenuNodes(menuList);
+  }
+
   getMenuNodes = menus => {
+    const {pathname} = this.props.location;
     return menus.map(menu => {
       if (menu.children === undefined) {
         return (
@@ -17,6 +23,10 @@ class LeftNav extends Component {
           </Menu.Item>
         );
       } else {
+        const find = menu.children.find(item => item.link === pathname);
+        if (find) {
+          this.openKey = menu.key;
+        }
         return (
           <SubMenu key={menu.key} icon={<menu.icon/>} title={menu.title}>
             {this.getMenuNodes(menu.children)}
@@ -27,18 +37,18 @@ class LeftNav extends Component {
   };
 
   render() {
+    const {pathname} = this.props.location;
     return (
       <Menu
         mode="inline"
-        defaultSelectedKeys={['item-home']}
+        selectedKeys={[mapping.get(pathname)]}
+        defaultOpenKeys={[this.openKey]}
         style={{height: '100%'}}
       >
-        {
-          this.getMenuNodes(menuList)
-        }
+        {this.nodes}
       </Menu>
     );
   }
 }
 
-export default LeftNav;
+export default withRouter(LeftNav);
