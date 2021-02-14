@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import memoryUtils from '../../utils/memoryUtils';
 import {Redirect, Route, Switch} from 'react-router-dom';
-import {Layout, Breadcrumb} from 'antd';
+import {Layout, Breadcrumb, Col} from 'antd';
 import LeftNav from '../../components/left-nav';
 import Heading from '../../components/header';
 import Home from '../home';
@@ -10,6 +10,7 @@ import Product from '../product';
 import Role from '../role';
 import User from '../user';
 import {Bar, Pie, Line} from '../charts';
+import './index.less';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -22,11 +23,9 @@ class Admin extends Component {
     }
     return (
       <Layout>
-        <Header className="header">
-          <Heading/>
-        </Header>
+        <Heading/>
         <Content style={{padding: '0 50px'}}>
-          <Breadcrumb style={{margin: '16px 0'}}>
+          <Breadcrumb className={'bread'} style={{margin: '16px 0'}}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>List</Breadcrumb.Item>
             <Breadcrumb.Item>App</Breadcrumb.Item>
@@ -35,7 +34,7 @@ class Admin extends Component {
             <Sider className="site-layout-background" width={200}>
               <LeftNav/>
             </Sider>
-            <Content style={{padding: '0 24px', minHeight: 280}}>
+            <Content style={{padding: '0 24px', minHeight: 400}}>
               <Switch>
                 <Route path={'/home'} component={Home}/>
                 <Route path={'/category'} component={Category}/>

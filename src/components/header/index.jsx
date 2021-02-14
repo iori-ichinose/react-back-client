@@ -1,14 +1,28 @@
 import React, {Component} from 'react';
-import {Menu} from 'antd';
+import './index.less';
+import logo from '../../assets/logo.png';
 
 class Heading extends Component {
+  logout = () => {
+    console.log('logout');
+  }
+
   render() {
     return (
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-        <Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        <Menu.Item key="3">nav 3</Menu.Item>
-      </Menu>
+      <div className="header">
+        <div className="header-top">
+          <span>欢迎, aaa</span>
+          <a onClick={this.logout}>退出</a>
+        </div>
+        <div className="header-bottom">
+          <div className="header-bottom-left">aaa</div>
+          <div className="header-bottom-right">
+            <span>1.1.11</span>
+            <img src={logo} alt="weather"/>
+            <span>ss</span>
+          </div>
+        </div>
+      </div>
     );
   }
 }
